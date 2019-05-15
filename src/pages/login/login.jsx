@@ -89,7 +89,6 @@ class Login extends Component{
                 { min: 5, message: '输入的密码不能小于6位字符！' },
                 { max: 12, message: '输入的密码不能大于12位字符!' },
                 { pattern: /^[a-zA-Z0-9_]+$/, message: '密码必须是英文、数字或下划线组成' },
-
                 ],
             })(
               <Input
