@@ -52,6 +52,7 @@ class Login extends Component{
   render() {
     // 如果用户已经登陆, 自动跳转到管理界面
     const user = memoryUtils.user;
+    //判断用户是否存在，如果存在就直接跳转到管理页面
     if (user && user._id) {
       return <Redirect to='/'/>
     }
@@ -80,7 +81,6 @@ class Login extends Component{
                 placeholder="用户名"
               />,
             )}
-
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('password', {
