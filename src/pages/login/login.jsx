@@ -1,9 +1,11 @@
 import React,{ Component } from 'react';
 
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 
 import './login.less';
 import logo from './images/logo.png';
+import { reqLogin } from '../../api/ajax';
+
 /*暴露模块*/
 class Login extends Component{
   //对表单进行验证
@@ -11,10 +13,28 @@ class Login extends Component{
     //取消默认行为
     ev.preventDefault();
     //用户和密码统一验证
-    this.props.form.validateFields((err, values) => {
+    /*
+    * 使用async和await 更好的处理promiseduixiang
+    * */
+    this.props.form.validateFields(async (err, values) => {
       //校验成功
       if (!err) {
-        console.log('登录成功 ', values);
+        //请求登录
+        const {username,password} = values;
+        /*
+        * 获取请求返回的结果数据
+        * */
+        const result = await reqLogin(username,password);
+        //判断请求成功 登录成功/失败
+        if (result.status === 0){
+          message.success('登录成功！');
+
+        //  跳转到管理首页
+          this.props.history.replace('/');
+        }else {
+        //  登录失败 提示错误信息
+          message.error(result.msg);
+        }
       }else{
         console.log('登录失败！');
       }
@@ -36,7 +56,7 @@ class Login extends Component{
             {getFieldDecorator('username', {
               rules: [
                 { required: true, message: '请输入用户名！' },
-                { min: 6, message: '输入的用户名不能小于5位字符！' },
+                { min: 3, message: '输入的用户名不能小于3位字符！' },
                 { max: 11, message: '输入的用户名不能大于12位字符!' },
                 { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须是英文、数字或下划线组成' },
                 ],
@@ -52,7 +72,7 @@ class Login extends Component{
             {getFieldDecorator('password', {
               rules: [
                 { required: true, message: '请输入密码!' },
-                { min: 5, message: '输入的密码不能小于5位字符！' },
+                { min: 5, message: '输入的密码不能小于6位字符！' },
                 { max: 12, message: '输入的密码不能大于12位字符!' },
                 { pattern: /^[a-zA-Z0-9_]+$/, message: '密码必须是英文、数字或下划线组成' },
 
