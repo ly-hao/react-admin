@@ -1,10 +1,13 @@
 import React,{ Component } from 'react';
-
+import {Redirect} from 'react-router-dom';
 import { Form, Icon, Input, Button, message } from 'antd';
 
 import './login.less';
 import logo from './images/logo.png';
 import { reqLogin } from '../../api/ajax';
+//存储数据
+import memoryUtils from '../../uitls/memoryUtils';
+import localStoreUtils from '../../uitls/localStoreUtils';
 
 /*暴露模块*/
 class Login extends Component{
@@ -29,7 +32,12 @@ class Login extends Component{
         if (result.status === 0){
           message.success('登录成功！');
 
-        //  跳转到管理首页
+         //保存user
+          const user = result.data;
+          memoryUtils.user = user;
+          localStoreUtils.saveUser(user);
+
+          //  跳转到管理首页
           this.props.history.replace('/');
         }else {
         //  登录失败 提示错误信息
@@ -42,6 +50,12 @@ class Login extends Component{
   };
 
   render() {
+    // 如果用户已经登陆, 自动跳转到管理界面
+    const user = memoryUtils.user;
+    if (user && user._id) {
+      return <Redirect to='/'/>
+    }
+
     /*const form = this.props.form;*/
     const { getFieldDecorator } = this.props.form;
     return <div className="login">
